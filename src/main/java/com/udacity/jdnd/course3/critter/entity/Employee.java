@@ -1,8 +1,8 @@
 package com.udacity.jdnd.course3.critter.entity;
 
-import com.udacity.jdnd.course3.critter.schedule.DayOfWeek;
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 
+import java.time.DayOfWeek;
 import java.util.Set;
 
 import javax.persistence.ElementCollection;
