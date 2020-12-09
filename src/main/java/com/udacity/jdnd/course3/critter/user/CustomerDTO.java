@@ -10,7 +10,6 @@ public class CustomerDTO {
     private long id;
     private String name;
     private String phoneNumber;
-    private String notes;
     private List<Long> petIds;
 
     public long getId() {
@@ -37,14 +36,6 @@ public class CustomerDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public List<Long> getPetIds() {
         return petIds;
     }
@@ -52,4 +43,11 @@ public class CustomerDTO {
     public void setPetIds(List<Long> petIds) {
         this.petIds = petIds;
     }
+
+    @Override
+    public String toString() {
+        return "CustomerDTO [id=" + id + ", name=" + name + ", petIds=" + petIds + ", phoneNumber="
+                + phoneNumber + "]";
+    }
+    
 }

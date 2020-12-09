@@ -44,4 +44,12 @@ public class EmployeeDTO {
     public void setDaysAvailable(Set<DayOfWeek> daysAvailable) {
         this.daysAvailable = daysAvailable;
     }
+
+    @Override
+    public String toString() {
+        return "EmployeeDTO [daysAvailable=" + daysAvailable + ", id=" + id + ", name=" + name + ", skills=" + skills
+                + "]";
+    }
+
+    
 }

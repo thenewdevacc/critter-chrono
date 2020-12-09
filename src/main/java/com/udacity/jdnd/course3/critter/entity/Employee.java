@@ -57,5 +57,11 @@ public class Employee {
         this.daysAvailable = daysAvailable;
     }
 
+    @Override
+    public String toString() {
+        return "Employee [daysAvailable=" + daysAvailable + ", id=" + id + ", name=" + name + ", skills=" + skills
+                + "]";
+    }
+
 
 }

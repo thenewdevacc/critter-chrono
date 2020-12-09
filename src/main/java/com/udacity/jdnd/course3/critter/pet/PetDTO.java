@@ -61,4 +61,11 @@ public class PetDTO {
     public void setId(long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "PetDTO [birthDate=" + birthDate + ", id=" + id + ", name=" + name + ", notes=" + notes + ", ownerId="
+                + ownerId + ", type=" + type + "]";
+    }
+    
 }

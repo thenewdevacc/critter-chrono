@@ -15,13 +15,20 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String phonenumber;
+    private String phoneNumber;
     @OneToMany(mappedBy = "customer",
                 targetEntity = Pet.class)
     private List<Pet> pets;
 
 
     public Customer() {}
+
+    public Customer(long id, String name, String phoneNumber, List<Pet> pets) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.pets = pets;
+    }
 
     public Long getId() {
         return id;
@@ -40,11 +47,11 @@ public class Customer {
     }
 
     public String getPhonenumber() {
-        return phonenumber;
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public void setPhonenumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public List<Pet> getPets() {
@@ -55,6 +62,9 @@ public class Customer {
         this.pets = pets;
     }
 
+    @Override
+    public String toString() {
+        return "Customer [id=" + id + ", name=" + name + ", pets=" + pets + ", phoneNumber=" + phoneNumber + "]";
+    }
 
-    
 }

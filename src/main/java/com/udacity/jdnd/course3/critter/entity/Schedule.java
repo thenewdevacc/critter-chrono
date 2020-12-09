@@ -6,7 +6,6 @@ import java.util.Set;
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 
 
-import javax.annotation.Generated;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,8 +21,8 @@ public class Schedule {
     private Long id;
     @ManyToMany(targetEntity = Pet.class)
     private List<Pet> pets;
-    @ManyToMany(targetEntity = Customer.class)
-    private List<Customer> customers;
+    @ManyToMany(targetEntity = Employee.class)
+    private List<Employee> employees;
     @ElementCollection
     private Set<EmployeeSkill> activities;
 
@@ -43,20 +42,28 @@ public class Schedule {
         this.pets = pets;
     }
 
-    public List<Customer> getCustomers() {
-        return customers;
-    }
-
-    public void setCustomers(List<Customer> customers) {
-        this.customers = customers;
-    }
-
     public Set<EmployeeSkill> getActivities() {
         return activities;
     }
 
     public void setActivities(Set<EmployeeSkill> activities) {
         this.activities = activities;
-    }    
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    @Override
+    public String toString() {
+        return "Schedule [activities=" + activities + ", employees=" + employees + ", id=" + id + ", pets=" + pets
+                + "]";
+    }
+
+    
 
 }

@@ -78,5 +78,10 @@ public class Pet {
         this.notes = notes;
     }
 
-    
+    @Override
+    public String toString() {
+        return "Pet [birthDate=" + birthDate + ", customer=" + customer + ", id=" + id + ", name=" + name + ", notes="
+                + notes + ", type=" + type + "]";
+    }
+   
 }
