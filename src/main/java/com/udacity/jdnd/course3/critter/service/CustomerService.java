@@ -17,10 +17,12 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    public Customer getCustomer(Long id){
+        return customerRepository.findById(id).get();
+    }
 
     public Customer save(Customer customer){
-        customerRepository.save(customer);
-        return customer;
+        return customerRepository.save(customer);
     }
 
     public List<Customer> getAllCustomers(){

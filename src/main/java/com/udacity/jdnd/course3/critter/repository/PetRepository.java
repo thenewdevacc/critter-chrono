@@ -1,6 +1,9 @@
 package com.udacity.jdnd.course3.critter.repository;
 
+import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Pet;
+
+import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -8,4 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PetRepository extends CrudRepository<Pet,Long> {
     
+    public List<Pet> findAllByCustomer(Customer customer);
 }
