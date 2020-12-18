@@ -29,8 +29,8 @@ public class PetController {
     @PostMapping()
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
         Pet pet = convertPetDTOtoEntity(petDTO);
-        // pet.setCustomer(customerService.getCustomer(petDTO.getOwnerId()));
-        pet.setCustomer(customerService.getCustomer(1L));
+        pet.setCustomer(customerService.getCustomer(petDTO.getOwnerId()));
+        // pet.setCustomer(customerService.getCustomer(1L));
         return convertEntityToPetDTO(petService.savePet(pet));
     }
 

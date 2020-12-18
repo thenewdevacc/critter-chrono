@@ -4,8 +4,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javafx.concurrent.ScheduledService;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,14 +53,14 @@ public class ScheduleController {
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        scheduleService.getScheduleForPet(petService.getPet(petId)).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
+        scheduleService.getScheduleForPets(petService.getPet(petId)).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
         return scheduleDTOS;
     }
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        scheduleService.getScheduleForEmployee(employeeService.getEmployee(employeeId)).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
+        scheduleService.getScheduleForEmployees(employeeService.getEmployee(employeeId)).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
         return scheduleDTOS;
     }
 
@@ -70,7 +68,7 @@ public class ScheduleController {
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
         List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
         List<Pet> pets = petService.getPetsByOwner(customerId);
-        pets.forEach(pet->scheduleService.getScheduleForPet(pet).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule))));
+        pets.forEach(pet->scheduleService.getScheduleForPets(pet).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule))));
         return scheduleDTOS;
     }
 

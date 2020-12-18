@@ -27,11 +27,11 @@ public class ScheduleService {
         return schedules;
     }
 
-    public List<Schedule> getScheduleForPet(Pet pet){ 
-        return scheduleRepository.findAllByPet(pet);
+    public List<Schedule> getScheduleForPets(Pet pet){ 
+        return scheduleRepository.findAllByPets(pet);
     }
 
-    public List<Schedule> getScheduleForEmployee(Employee employee){
-        return scheduleRepository.findAllByEmployee(employee);
+    public List<Schedule> getScheduleForEmployees(Employee employee){
+        return scheduleRepository.findAllByEmployees(employee);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ScheduleRepository extends CrudRepository<Schedule,Long>{
     
-    public List<Schedule> findAllByPet(Pet pet);
+    public List<Schedule> findAllByPets(Pet pet);
 
-    public List<Schedule> findAllByEmployee(Employee employee);
+    public List<Schedule> findAllByEmployees(Employee employee);
 }
