@@ -1,6 +1,5 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
-import javax.persistence.Embeddable;
 
 
 public enum DayOfWeek {

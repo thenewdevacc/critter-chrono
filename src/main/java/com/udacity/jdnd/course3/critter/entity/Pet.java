@@ -1,11 +1,9 @@
 package com.udacity.jdnd.course3.critter.entity;
 
-import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.pet.PetType;
 
 import java.time.LocalDate;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

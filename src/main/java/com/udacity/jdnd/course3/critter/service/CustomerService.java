@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
-import com.udacity.jdnd.course3.critter.user.CustomerDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
