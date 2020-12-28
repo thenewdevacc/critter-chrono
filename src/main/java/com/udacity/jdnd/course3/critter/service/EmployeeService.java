@@ -2,21 +2,53 @@ package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.entity.Employee;
 import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
+import com.udacity.jdnd.course3.critter.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
+@Transactional
 public class EmployeeService {
-    
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    EmployeeRepository employeeRepository;
 
-    public Employee saveEmployee(Employee employee){
-        return employeeRepository.save(employee);
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
-	public Employee getEmployee(long employeeId) {
-		return employeeRepository.findById(employeeId).get();
-	}
+    public Employee saveEmployee(Employee empl) {
+        return employeeRepository.save(empl);
+    }
+
+    public Employee getEmployeeByID(long id) {
+        //System.out.println("Inside service : " + id);
+        return employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found, ID: " + id));
+    }
+
+    public void setEmployeeAvailability(Set<DayOfWeek> daysAvailable, long employeeId) {
+        Employee employee = getEmployeeByID(employeeId);
+        employee.setDaysAvailable(daysAvailable);
+        saveEmployee(employee);
+    }
+
+    public List<Employee> getEmployeeBySkillAndDate(Set<EmployeeSkill> skills, LocalDate date) {
+
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        List<Employee> employees = new ArrayList<Employee>();
+        for(EmployeeSkill skill : skills) {
+            List<Employee> resultSet = employeeRepository.getAllBySkills(skill);
+            for (Employee empl : resultSet) {
+                if (!employees.contains(empl) && empl.getDaysAvailable().contains(dayOfWeek) && empl.getSkills().containsAll(skills)) {
+                    employees.add(empl);
+                }
+            }
+        }
+        return employees;
+    }
 }

@@ -1,35 +1,30 @@
 package com.udacity.jdnd.course3.critter.entity;
 
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
-
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 @Entity
-public class Employee {
-    
+@Table
+public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String name;
+
     @ElementCollection
     private Set<EmployeeSkill> skills;
+
     @ElementCollection
     private Set<DayOfWeek> daysAvailable;
 
-    public Employee(){}
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -56,12 +51,4 @@ public class Employee {
     public void setDaysAvailable(Set<DayOfWeek> daysAvailable) {
         this.daysAvailable = daysAvailable;
     }
-
-    @Override
-    public String toString() {
-        return "Employee [daysAvailable=" + daysAvailable + ", id=" + id + ", name=" + name + ", skills=" + skills
-                + "]";
-    }
-
-
 }

@@ -1,34 +1,33 @@
 package com.udacity.jdnd.course3.critter.entity;
 
+import com.udacity.jdnd.course3.critter.entity.Pet;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
 @Entity
-public class Customer {
-    
+@Table
+public class Customer implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String phoneNumber;
-    @OneToMany(mappedBy = "customer",
-                targetEntity = Pet.class)
-    private List<Pet> pets;
+    private String notes;
 
+    public List<Pet> getPets() {
+        return pets;
+    }
 
-    public Customer() {}
-
-    public Customer(long id, String name, String phoneNumber, List<Pet> pets) {
-        this.id = id;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
+    public void setPets(List<Pet> pets) {
         this.pets = pets;
     }
+
+    @OneToMany(targetEntity = Pet.class, cascade = CascadeType.ALL)
+    private List<Pet> pets = new ArrayList<Pet>();
 
     public Long getId() {
         return id;
@@ -46,25 +45,23 @@ public class Customer {
         this.name = name;
     }
 
-    public String getPhonenumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhonenumber(String phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Pet> getPets() {
-        return pets;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setPets(List<Pet> pets) {
-        this.pets = pets;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    @Override
-    public String toString() {
-        return "Customer [id=" + id + ", name=" + name + ", pets=" + pets + ", phoneNumber=" + phoneNumber + "]";
+    public void addOnePet(Pet pet) {
+        this.pets.add(pet);
     }
-
 }

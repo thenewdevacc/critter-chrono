@@ -1,33 +1,35 @@
 package com.udacity.jdnd.course3.critter.service;
 
-import java.util.ArrayList;
+import com.udacity.jdnd.course3.critter.entity.Customer;
+import com.udacity.jdnd.course3.critter.exception.ResourceNotFoundException;
+import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
-import com.udacity.jdnd.course3.critter.entity.Customer;
-import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 @Service
+@Transactional
 public class CustomerService {
+    CustomerRepository customerRepository;
+    PetService petService;
 
-    
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    public Customer getCustomer(Long id){
-        return customerRepository.findById(id).get();
+    public CustomerService(CustomerRepository customerRepository, PetService petService) {
+        this.customerRepository = customerRepository;
+        this.petService = petService;
     }
 
-    public Customer save(Customer customer){
+    public Customer save(Customer customer) {
         return customerRepository.save(customer);
     }
 
-    public List<Customer> getAllCustomers(){
-        List<Customer> customers = new ArrayList<>();
-        customerRepository.findAll().forEach(customers::add);
-        return customers;
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
+
     }
 
+    public Customer getOwnerByPetId(long petId) {
+        Long customerId = petService.getPetById(petId).getOwnerId().getId();
+        return customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("No Customer found for Pets Owner ID : " + customerId + ", Pet Id is : " + petId));
+    }
 }

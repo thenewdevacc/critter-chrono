@@ -4,42 +4,72 @@ import java.util.List;
 import java.util.Set;
 
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
+import com.udacity.jdnd.course3.critter.entity.Pet;
+import com.udacity.jdnd.course3.critter.entity.Employee;
+import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDate;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-
+/**
+ * Represents the form that schedule request and response data takes. Does not map
+ * to the database directly.
+ */
 @Entity
-public class Schedule {
-    
+@Table
+public class Schedule implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToMany(targetEntity = Pet.class)
-    private List<Pet> pets;
-    @ManyToMany(targetEntity = Employee.class)
-    private List<Employee> employees;
-    @ElementCollection
-    private Set<EmployeeSkill> activities;
+    private long id;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    private LocalDate date;
+/*
+    @ElementCollection
+    private List<Long> employeeIds;
+    @ElementCollection
+    private List<Long> petIds;
+ */
+    @ElementCollection
+    private Set<EmployeeSkill> activities;
+
+    @ManyToMany(targetEntity = Employee.class)
+    private List<Employee> employees;
+
+    @ManyToMany(targetEntity = Pet.class)
+    private List<Pet> pets;
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployeeIds(List<Employee> employeeIds) {
+        this.employees = employeeIds;
     }
 
     public List<Pet> getPets() {
         return pets;
     }
 
-    public void setPets(List<Pet> pets) {
-        this.pets = pets;
+    public void setPetIds(List<Pet> petIds) {
+        this.pets = petIds;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Set<EmployeeSkill> getActivities() {
@@ -49,21 +79,4 @@ public class Schedule {
     public void setActivities(Set<EmployeeSkill> activities) {
         this.activities = activities;
     }
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    @Override
-    public String toString() {
-        return "Schedule [activities=" + activities + ", employees=" + employees + ", id=" + id + ", pets=" + pets
-                + "]";
-    }
-
-    
-
 }

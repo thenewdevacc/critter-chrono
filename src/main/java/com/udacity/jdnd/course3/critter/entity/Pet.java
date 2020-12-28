@@ -2,31 +2,59 @@ package com.udacity.jdnd.course3.critter.entity;
 
 import com.udacity.jdnd.course3.critter.pet.PetType;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
-
 @Entity
-public class Pet {
-    
+public class Pet implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne(targetEntity = Customer.class)
-    private Customer customer;
     private PetType type;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Customer customer;
+
+    public Pet() {
+
+    }
+
+    public PetType getType() {
+        return type;
+    }
+
+    public void setType(PetType type) {
+        this.type = type;
+    }
+
+    public Customer getOwnerId() {
+        return customer;
+    }
+
+    public void setOwnerId(Customer customer) {
+        this.customer = customer;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     private LocalDate birthDate;
     private String notes;
-
-
-    public Pet() {}
-
 
     public Long getId() {
         return id;
@@ -51,35 +79,4 @@ public class Pet {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-
-    public PetType getType() {
-        return type;
-    }
-
-    public void setType(PetType type) {
-        this.type = type;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    @Override
-    public String toString() {
-        return "Pet [birthDate=" + birthDate + ", customer=" + customer + ", id=" + id + ", name=" + name + ", notes="
-                + notes + ", type=" + type + "]";
-    }
-   
 }

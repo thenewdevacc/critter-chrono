@@ -1,43 +1,51 @@
 package com.udacity.jdnd.course3.critter.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.udacity.jdnd.course3.critter.exception.ResourceNotFoundException;
 import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Pet;
+import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class PetService {
-    
-    @Autowired
-    private PetRepository petRepository;
+    PetRepository petRepository;
+    CustomerRepository customerRepository;
 
-    @Autowired
-    private CustomerService customerService;
-
-    public Customer getOwnerByPet(Long id){
-        return petRepository.findById(id).get().getCustomer();
+    public PetService(PetRepository petRepository, CustomerRepository customerRepository) {
+        this.petRepository = petRepository;
+        this.customerRepository = customerRepository;
     }
 
-    public Pet savePet(Pet pet){
-        return petRepository.save(pet);
+    public Pet savePet(Pet pet, Long customerId) {
+        Pet newPet = new Pet();
+        Customer customer = customerRepository.findById(customerId).orElseThrow(()-> new ResourceNotFoundException("No Customer Exist for ID : " + customerId));
+        pet.setOwnerId(customer);
+        newPet = petRepository.save(pet);
+        //Now need to associate pet to Customer
+        //System.out.println("Adding pet : " + newPet.getName() + " : " + newPet.getId());
+        //System.out.println("Returning after Saving Pet : " + newPet.getId());
+        customer.addOnePet(newPet);
+        customerRepository.save(customer);
+        return newPet;
     }
 
-    public Pet getPet(Long id){
-        return petRepository.findById(id).get();
+    public Pet getPetById(Long id) {
+        return petRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Pet not exist for ID : " + id));
     }
 
-    public List<Pet> getPets(){
-        List<Pet> pets = new ArrayList<>();
-        petRepository.findAll().forEach(pets::add);
-        return pets;
+    public List<Pet> getAllPets() {
+        return petRepository.findAll();
     }
 
-    public List<Pet> getPetsByOwner(Long id){
-        return petRepository.findAllByCustomer(customerService.getCustomer(id));
+    public List<Pet> getPetsByOwner(long ownerId) {
+        Customer customer = customerRepository.findById(ownerId).orElseThrow(()-> new ResourceNotFoundException("No Customer Exist for ID : " + ownerId));
+        return petRepository.findByCustomer(customer);
     }
 }

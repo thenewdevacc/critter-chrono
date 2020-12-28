@@ -1,18 +1,14 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
+import com.udacity.jdnd.course3.critter.entity.Pet;
+import com.udacity.jdnd.course3.critter.entity.Schedule;
+import com.udacity.jdnd.course3.critter.service.ScheduleService;
+import com.udacity.jdnd.course3.critter.entity.Employee;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.udacity.jdnd.course3.critter.entity.Employee;
-import com.udacity.jdnd.course3.critter.entity.Pet;
-import com.udacity.jdnd.course3.critter.entity.Schedule;
-import com.udacity.jdnd.course3.critter.service.EmployeeService;
-import com.udacity.jdnd.course3.critter.service.PetService;
-import com.udacity.jdnd.course3.critter.service.ScheduleService;
 
 /**
  * Handles web requests related to Schedules.
@@ -20,67 +16,77 @@ import com.udacity.jdnd.course3.critter.service.ScheduleService;
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleController {
+    public ScheduleController(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
+    }
 
-    @Autowired
-    private ScheduleService scheduleService;
-
-    @Autowired
-    private PetService petService;
-
-    @Autowired
-    private EmployeeService employeeService;
+    ScheduleService scheduleService;
 
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = new Schedule();
-        schedule = convertScheduleDTOtoEntity(scheduleDTO);
-        List<Pet> pets = new ArrayList<>();
-        List<Employee> employees = new ArrayList<>();
-        scheduleDTO.getPetIds().forEach(petid -> pets.add(petService.getPet(petid)));
-        scheduleDTO.getEmployeeIds().forEach(empid -> employees.add(employeeService.getEmployee(empid)));
-        schedule.setEmployees(employees);
-        schedule.setPets(pets);
-        return convertEntityToScheduleDTO(scheduleService.createSchedule(schedule));
+        List<Long> employeeIds = scheduleDTO.getEmployeeIds();
+        List<Long> petIds = scheduleDTO.getPetIds();
+        BeanUtils.copyProperties(scheduleDTO,schedule);
+        schedule = scheduleService.saveSchedule(schedule, employeeIds, petIds);
+        BeanUtils.copyProperties(schedule, scheduleDTO);
+        return scheduleDTO;
     }
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        scheduleService.getAllSchedules().forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
-        return scheduleDTOS;
+        List<Schedule> schedules = scheduleService.getAllSchedules();
+        return getScheduleDTOS(schedules);
     }
 
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        scheduleService.getScheduleForPets(petService.getPet(petId)).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
-        return scheduleDTOS;
+
+        List<Schedule> petSchedules = scheduleService.getScheduleByPetId(petId);
+        return getScheduleDTOS(petSchedules);
     }
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        scheduleService.getScheduleForEmployees(employeeService.getEmployee(employeeId)).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule)));
+        List<Schedule> employeeSchedules = scheduleService.getScheduleByEmployeeId(employeeId);
+        return getScheduleDTOS(employeeSchedules);
+    }
+
+    private List<ScheduleDTO> getScheduleDTOS(List<Schedule> employeeSchedules) {
+        List<ScheduleDTO> scheduleDTOS = new ArrayList<ScheduleDTO>();
+        for (Schedule schedule : employeeSchedules) {
+            ScheduleDTO scheduleDTO = new ScheduleDTO();
+            //System.out.println(schedule.getEmployees().get(0).getId());
+            scheduleDTO.setEmployeeIds(getEmployeeIdsFromSchedule(schedule));
+            scheduleDTO.setPetIds(getPetIdsFromSchedule(schedule));
+            scheduleDTO.setActivities(schedule.getActivities());
+            scheduleDTO.setDate(schedule.getDate());
+            scheduleDTOS.add(scheduleDTO);
+        }
         return scheduleDTOS;
+    }
+
+    private List<Long> getPetIdsFromSchedule(Schedule schedule) {
+        List<Long> petIds = new ArrayList<>();
+        List<Pet> pets = schedule.getPets();
+        for(Pet pet : pets) {
+            petIds.add(pet.getId());
+        }
+        return petIds;
+    }
+
+    private List<Long> getEmployeeIdsFromSchedule(Schedule schedule) {
+        List<Long> employeeIds = new ArrayList<>();
+        List<Employee> employees = schedule.getEmployees();
+        for(Employee employee : employees) {
+            employeeIds.add(employee.getId());
+        }
+        return employeeIds;
     }
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
-        List<ScheduleDTO> scheduleDTOS = new ArrayList<>();
-        List<Pet> pets = petService.getPetsByOwner(customerId);
-        pets.forEach(pet->scheduleService.getScheduleForPets(pet).forEach(schedule -> scheduleDTOS.add(convertEntityToScheduleDTO(schedule))));
-        return scheduleDTOS;
-    }
-
-    private ScheduleDTO convertEntityToScheduleDTO(Schedule schedule){
-        ScheduleDTO scheduleDTO = new ScheduleDTO();
-        BeanUtils.copyProperties(schedule, scheduleDTO);
-        return scheduleDTO;  
-    } 
-
-    private Schedule convertScheduleDTOtoEntity(ScheduleDTO scheduleDTO){
-        Schedule schedule = new Schedule();
-        BeanUtils.copyProperties(scheduleDTO, schedule);
-        return schedule;
+        List<Schedule> customerSchedules = scheduleService.getScheduleByCustomerId(customerId);
+        return getScheduleDTOS(customerSchedules);
     }
 }
